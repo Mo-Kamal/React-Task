@@ -1,0 +1,20 @@
+.posts-container {
+  width: 70%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: center;
+  .post-card {
+    background-color: rgb(134, 135, 134);
+    margin: 5px;
+    padding: 5px;
+    max-width: 600px;
+  }
+}
+
+.pagination-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

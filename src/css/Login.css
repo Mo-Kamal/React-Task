@@ -1,0 +1,35 @@
+.login-form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 500px;
+  margin: 50px auto;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+  text-align: right;
+  border: 1px solid #ccc;
+  padding: 12px 20px;
+}
+
+.login-form label {
+  text-align: right;
+  margin: 10px;
+}
+
+.login-form button {
+  margin: 10px 0;
+  background-color: #05c981;
+  color: white;
+  padding: 14px 20px;
+  margin: 15px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+/*# sourceMappingURL=Login.css.map */
