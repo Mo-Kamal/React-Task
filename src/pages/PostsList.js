@@ -8,50 +8,57 @@ import Pagination from "./components/Pagination";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import SearchInput from "./components/SearchInput";
 import { Input } from "@mui/material";
+import { fetchPosts } from "../actions";
+
 let PageSize = 16;
 const PostsList = () => {
-  const history = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredResults, setFilteredResults] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  useEffect(() => {
-    // console.log(!user.isSignedIn);
-    // if (!user.isSignedIn) {
-    //   history("/login");
-    // }
-    // dispatch(fetchPosts());
-  }, []);
   const [modalDisplay, setModalDisplay] = useState(false);
+
+  const history = useNavigate();
   const dispatch = useDispatch();
 
-  const posts = useSelector((state) => state.posts);
   const user = useSelector((state) => state.auth);
-  // console.log(posts);
+  // check if user is signed in
+  useEffect(() => {
+    if (!user.isSignedIn) {
+      history("/login");
+    }
+    dispatch(fetchPosts());
+  }, []);
+  const posts = useSelector((state) => state.posts);
+
   const editPostId = useRef(0);
-  const searchItems = (searchValue) => {
+
+  // filter data based upon search field
+  let searchItems;
+  searchItems = (searchValue) => {
     setSearchInput(searchValue);
     if (searchValue !== "") {
-      console.log(searchValue);
       const filteredData = posts.filter((item) => {
         return Object.values(item)
           .join("")
           .toLowerCase()
           .includes(searchValue.toLowerCase());
       });
-      console.log(filteredData);
+
       setFilteredResults(filteredData);
     } else {
-      console.log("123");
       setFilteredResults(posts);
     }
   };
-  let displayData;
+  useEffect(() => {
+    searchItems(searchInput);
+  }, [modalDisplay]);
+
+  // display posts/filtered data
+  let displayData = [];
   const displayPosts = useMemo(() => {
     searchInput != "" ? (displayData = filteredResults) : (displayData = posts);
-    console.log(searchInput);
-    console.log(filteredResults);
+
     const firstPageIndex = (currentPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize;
     return displayData.slice(firstPageIndex, lastPageIndex)?.map((post) => {
@@ -65,12 +72,14 @@ const PostsList = () => {
           }}
         >
           {" "}
-          <Card sx={{ maxWidth: 500, height: 270 }}>
+          <Card
+            sx={{ maxWidth: 500, height: 200, backgroundColor: "ghostwhite" }}
+          >
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {post.title}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body1" color="text.secondary" paddingTop={1}>
                 {post.body}
               </Typography>
             </CardContent>
@@ -78,36 +87,23 @@ const PostsList = () => {
         </div>
       );
     });
-  }, [currentPage, posts, filteredResults]);
-
-  // const displayPosts = posts?.map((post) => {
-  //   return (
-  //     <div
-  //       className="post-card"
-  //       key={post.id}
-  //       onClick={() => {
-  //         setModalDisplay(true);
-  //         editPostId.current = post.id;
-  //       }}
-  //     >
-  //       <h2>{post.title}</h2>
-  //       <h3>{post.body}</h3>
-  //     </div>
-  //   );
-  // });
+  }, [currentPage, posts, filteredResults, modalDisplay]);
 
   return (
     <div className="posts-page">
-      <Header />
-      {/* <SearchInput /> */}
-      <div>
-        <Input
-          icon="search"
-          placeholder="Search..."
-          onChange={(e) => {
-            searchItems(e.target.value);
-          }}
-        />
+      <Header dataCount={displayData.length} />
+
+      <div className="posts-input-container">
+        <h2 className="posts-input-title">Search bar:</h2>
+        <div className="posts-input">
+          <Input
+            icon="search"
+            placeholder="Search..."
+            onChange={(e) => {
+              searchItems(e.target.value);
+            }}
+          />
+        </div>
       </div>
       {modalDisplay ? (
         <EditModal
@@ -129,6 +125,5 @@ const PostsList = () => {
     </div>
   );
 };
-// console.log(contents);
 
 export default PostsList;

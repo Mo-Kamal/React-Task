@@ -8,14 +8,19 @@ const Login = () => {
   const [errors, setErrors] = useState({
     username: "",
     password: "",
+    submit: "",
   });
   let history = useNavigate();
   const dispatch = useDispatch();
+  // fetch users as database for user validation
+  // the username and email in jsonplaceholder users have been used as username and password
+  // example: username: "Bret", password:"Sincere@april.biz"
   const users = useSelector((state) => state.users);
   useEffect(() => {
     dispatch(fetchUsers());
   }, []);
 
+  // username/password validation
   const Validation = ([inputName, inputData]) => {
     if (!inputData.trim()) {
       setErrors((errors) => ({
@@ -24,8 +29,6 @@ const Login = () => {
       }));
       return false;
     } else if (inputData.trim().length < 3) {
-      console.log(inputName);
-
       setErrors((errors) => ({
         ...errors,
         [inputName]: `${inputName} must be more than 2 letters`,
@@ -46,6 +49,7 @@ const Login = () => {
     }
   };
 
+  // onSubmit handler
   const onSubmitHandle = (event) => {
     event.preventDefault();
     const submittedUsername = event.target.elements.username.value;
@@ -66,16 +70,17 @@ const Login = () => {
       }
     });
     if (userAuth) {
-      console.log(userAuth);
       dispatch(signIn(userAuth));
-      history("/posts");
+      history("/");
     } else {
-      console.log("s");
+      setErrors((errors) => ({
+        ...errors,
+        submit: "username/password is not valid",
+      }));
       return false;
     }
-
-    console.log("sub");
   };
+
   return (
     <div className="login-page">
       <form className="login-form" onSubmit={onSubmitHandle}>
@@ -95,135 +100,10 @@ const Login = () => {
         />
         <div className="error-message">{errors.password}</div>
         <button type="submit">Submit</button>
+        <div className="error-message">{errors.submit}</div>
       </form>
     </div>
   );
 };
 
 export default Login;
-
-// const Login = () => {
-//   // const [values, setValues] = useState({ username: "", password: "" });
-//   // //   const [submitError, setSubmitError] = useState("");
-//   const [errors, setErrors] = useState({
-//     username: "",
-//     password: "",
-//   });
-//   let history = useNavigate();
-//   // const changeHandler = (e) => {
-//   //   console.log("s");
-//   //   console.log(e.target.value);
-//   //   setValues((values) => ({ ...values, [e.target.name]: e.target.value }));
-//   //   // console.log(e);
-//   // };
-
-//   //   let errors = { username: "", password: "" };
-//   const Validation = ([inputName, inputData]) => {
-//     // console.log(errors);
-//     if (!inputData.trim()) {
-//       //   errors.username = "وارد کردن نام کاربری الزامی است";
-//       // console.log(inputName);
-//       setErrors((errors) => ({
-//         ...errors,
-//         [inputName]: "وارد کردن نام کاربری الزامی است",
-//       }));
-//       return false;
-//     } else if (inputData.trim().length < 5) {
-//       console.log(inputName);
-//       //   errors.username = "نام کاربری باید بیشتر از 4 حرف باشد";
-//       setErrors((errors) => ({
-//         ...errors,
-//         [inputName]: `نام ${inputName} باید بیشتر از 4 حرف باشد`,
-//       }));
-//       return false;
-//     } else if (inputData.trim().length > 20) {
-//       //   errors.username = "نام کاربری باید کمتر از 20 حرف باشد";
-//       setErrors((errors) => ({
-//         ...errors,
-//         [inputName]: "نام کاربری باید کمتر از 20 حرف باشد",
-//       }));
-//       return false;
-//     } else {
-//       setErrors((errors) => ({
-//         ...errors,
-//         [inputName]: "",
-//       }));
-//       return true;
-//     }
-//   };
-
-//   //   const Validation = () => {
-//   //     if (!values.username.trim()) {
-//   //       //   errors.username = "وارد کردن نام کاربری الزامی است";
-//   //       console.log(values.username);
-//   //       setErrors(() => ({
-//   //         ...errors,
-//   //         username: "وارد کردن نام کاربری الزامی است",
-//   //       }));
-//   //     } else if (values.username.trim().length < 5) {
-//   //       console.log("2");
-//   //       //   errors.username = "نام کاربری باید بیشتر از 4 حرف باشد";
-//   //       setErrors(() => ({
-//   //         ...errors,
-//   //         username: "نام کاربری باید بیشتر از 4 حرف باشد",
-//   //       }));
-//   //     } else if (values.username.trim().length > 20) {
-//   //       //   errors.username = "نام کاربری باید کمتر از 20 حرف باشد";
-//   //       setErrors(() => ({
-//   //         ...errors,
-//   //         username: "نام کاربری باید کمتر از 20 حرف باشد",
-//   //       }));
-//   //     }
-//   //     if (!values.password.trim()) {
-//   //       errors.password = "وارد کردن رمز عبور الزامی است";
-//   //     } else if (values.password.trim().length < 9) {
-//   //       errors.password = "رمز عبور باید بیشتر از 8 حرف باشد";
-//   //     } else if (values.password.trim().length > 20) {
-//   //       errors.password = "رمز عبور باید کمتر از 20 حرف باشد";
-//   //     }
-//   //   };
-//   const callbackFunction = () => {
-//     const isEmpty = Object.values(errors).every((x) => x === null || x === "");
-//     if (isEmpty) {
-//       return false;
-//     }
-//   };
-
-//   const onSubmitHandle = (event) => {
-//     event.preventDefault();
-//     const y = Validation(["username", event.target.elements.username.value]);
-//     const t = Validation(["password", event.target.elements.password.value]);
-
-//     if (y == false || t == false) {
-//       return false;
-//     }
-//     console.log("sub");
-//   };
-//   return (
-//     <div className="login-page">
-//       <form className="login-form" onSubmit={onSubmitHandle}>
-//         <h2>فرم ورود</h2>
-//         <label>نام کاربری</label>
-//         <input
-//           type="text"
-//           placeholder="نام کاربری خود را وارد کنید"
-//           name="username"
-//           // onChange={changeHandler}
-//           //   required
-//         />
-//         <div className="error-message">{errors.username}</div>
-//         <label>رمز عبور</label>
-//         <input
-//           type="password"
-//           // onChange={changeHandler}
-//           placeholder="رمز عبور خود را وارد کنید"
-//           name="password"
-//         />
-//         <div className="error-message">{errors.password}</div>
-//         <button type="submit">تایید</button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default Login;

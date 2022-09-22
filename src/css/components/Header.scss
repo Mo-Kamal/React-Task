@@ -1,0 +1,12 @@
+.header-container {
+  display: flex;
+  width: 1000px;
+  padding: 10px;
+  margin: 10px auto;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  border-radius: 5px;
+  color: ghostwhite;
+  font-size: 20px;
+  background-color: rgb(53, 53, 58);
+}
